@@ -1,0 +1,216 @@
+# MAIN:
+
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+        public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+
+    Oraculo oraculo = new Oraculo();
+
+    System.out.println("Bem-vindo, Guerreiro! Qual o seu nome?");
+    String nomeGuerreiro = scanner.nextLine();
+    oraculo.setNome(nomeGuerreiro);
+
+    System.out.println("---------------");
+
+    int vidasGuerreiro = oraculo.setVidas();
+    System.out.printf("Olá, %s! Você tem %d vidas.\n", nomeGuerreiro, vidasGuerreiro);
+
+    System.out.println("---------------");
+
+    System.out.println(oraculo.prologoIntroducao());
+
+    Random random = new Random();
+    int numSegredo = random.nextInt(100) + 1;
+
+    int tentativas = vidasGuerreiro;
+    boolean acertou = false;
+
+    while (tentativas > 0 && !acertou) {
+        System.out.println("Digite seu palpite: ");
+        int palpite = scanner.nextInt();
+
+        if (palpite == numSegredo) {
+            System.out.println("Parabéns! Você acertou o segredo.");
+            acertou = true;
+        } else {
+            if (palpite < numSegredo) {
+                System.out.println("O segredo é MAIOR que o seu palpite.");
+            } else {
+                System.out.println("O segredo é MENOR que o seu palpite.");
+            }
+            tentativas--;
+            
+            System.out.println("---------------");
+
+            System.out.printf("Você tem %d vidas.\n", tentativas);
+        }
+        
+        System.out.println("---------------");
+    }
+ 
+    if (tentativas == 0) { 
+                System.out.println("Fim de jogo! Você perdeu o Level 1.");
+        return; // encerra o jogo
+        }
+        
+    System.out.println("Parabéns! Você passou para o Level 2.");
+
+    System.out.println("---------------");
+    
+    System.out.println("Escolha uma opção:");
+    System.out.println("0 - par");
+    System.out.println("1 - ímpar");
+    int opcao = scanner.nextInt();
+
+    int resultado = oraculo.loadLevel2(opcao);
+    if (resultado == 1) {
+        System.out.println("Você avança para o próximo nível!");
+    } else {
+        System.out.println("Você perdeu o nível 2! Tente novamente.");
+    }
+        }}
+----------------------------------------------------------------------------------------------
+# CLASSE GUERREIRO:
+
+public class Guerreiro {
+    private String nome;
+    private int vidas;
+    
+    public Guerreiro(String nome) {
+        this.nome = nome;
+        this.vidas = 3;
+    }
+    
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    
+    public int setVidas() {
+        return vidas;
+    }
+    
+    public String getNome() {
+        return nome;
+    }
+    
+    public String vidaExtra() {
+        vidas++;
+        return "Você ganhou uma vida extra! Total de vidas: " + vidas;
+    }
+
+    void setVidas(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+----------------------------------------------------------------------------------------------
+# CLASSE ORACULO:
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Oraculo {
+
+    String nome;
+    Guerreiro guerreiro;
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int setVidas() {
+        Random random = new Random();
+        return random.nextInt(4) + 9; // sorteia entre 9 e 12 vidas
+    }
+
+    public String prologoIntroducao() {
+        return "Olá, sou o Oráculo e vou testar sua sorte!";
+    }
+
+    public int loadLevel1() {
+        Random random = new Random();
+        int segredo = random.nextInt(100) + 1;
+        Scanner scanner = new Scanner(System.in);
+
+         // O Usuário deve tentar encontrar o número "Segredo", e terá o número aleatório de vidas para tentar encontrar.
+        
+        int tentativas = 0;
+        while (guerreiro.setVidas() > 0) {
+            System.out.print("Digite um número entre 1 e 100: ");
+            int palpite = scanner.nextInt();
+            tentativas++;
+
+            if (palpite < segredo) {
+                System.out.println("Segredo é MAIOR!");
+            } else if (palpite > segredo) {
+                System.out.println("Segredo é MENOR!");
+            } else {
+                System.out.println("Parabéns, você acertou em " + tentativas + " tentativas!");
+                return 1;
+            }
+        }
+
+        System.out.println("Você perdeu todas as vidas! O segredo era " + segredo + ".");
+        return 0;
+    }
+
+    public int loadLevel2(int opcao) {
+        Random random = new Random();
+        int oraculo = random.nextInt(6); // número do Oráculo entre 0 e 5
+        int guerreiro = random.nextInt(6); // número do Guerreiro entre 0 e 5
+
+        int soma = oraculo + guerreiro;
+        boolean somaPar = (soma % 2 == 0);
+        
+        // Se o Usuário escolher Par ou Impar e for igual a Soma de oraculo + Guerreiro, vai ganhar, caso contrário, perde.
+        // Exemplo: Usúario escolhe Par, mas a soma da Impar, ele perde...
+        
+        if ((opcao == 0 && somaPar) || (opcao == 1 && !somaPar)) {
+            System.out.println("Parabéns, você ganhou! Oráculo: " + oraculo + ", Guerreiro: " + guerreiro
+                    + ", Soma: " + soma);
+            return 1;
+        } else {
+            System.out.println("Você perdeu! Oráculo: " + oraculo + ", Guerreiro: " + guerreiro + ", Soma: "
+                    + soma);
+            return 0;
+        }
+    }
+
+    boolean decidirVidaExtra(String misericordia){
+        int num_espaco = 0;
+        List<String> pedido = new ArrayList<>();
+        int indice = 0;
+        while (indice < misericordia.length()){
+           pedido.add(misericordia.substring(indice, +1));
+           indice += 1;
+        }
+        
+        for(String s: pedido){
+            if (" ".equals(s)){
+                num_espaco += 1;
+            }
+        }
+        
+        if(num_espaco > 4){
+            InOut.MsgDeInformacao("Sucesso", "Seu pedido de vida extra foi concedido!");
+        } else {
+            InOut.MsgDeAviso("Fracasso", "Seu pedido de vida extra foi negado");
+        return false;
+        }
+        return true;
+    }
+
+    public String prologoVencedor() {
+        return "Parabéns " + guerreiro.getNome() + "! Você venceu o desafio proposto pelo Oráculo " + nome + ".";
+    }
+
+    public String prologoPerdedor() {
+    return "Lamentamos informar, corajoso guerreiro, que o destino não estava ao seu lado desta vez. Apesar de todo seu esforço e valentia, as forças das trevas prevaleceram. Esperamos que possa se recuperar e, quem sabe, tentar novamente um dia.";
+}
+
+}
